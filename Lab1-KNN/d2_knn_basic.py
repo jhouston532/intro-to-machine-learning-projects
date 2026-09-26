@@ -56,14 +56,14 @@ def minkowskian_check(X, y, p_min, p_max, neighbors=5, test_size=0.2, rand_state
     p_val_array = []
     train_acc_arr, test_acc_arr = [], []
 
-    # since we want to test only the changes in p, we have a estatic data set defined here
+    # since we want to see only the results of changes in p, 
+    # we have a static data set defined here
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=test_size, random_state=rand_state
     )
 
-    for i in range(p_range+1):
+    for p_val in range(p_min, p_max+1):
         # set up the classifier
-        p_val = p_min + i
         p_val_array.append(p_val)
         knn = KNeighborsClassifier(n_neighbors=neighbors, p=p_val)
         knn.fit(X_train, y_train)
@@ -157,7 +157,7 @@ def main():
         f"Train-Test\nAccuracy Avg:\t{avg_array(p_train_acc)}\t{avg_array(p_test_acc)}"
     )
     # print(f"Mode Acc:\t{mode_array(p_train_acc)}\t{mode_array(p_test_acc)}")
-    print(f"Median Acc:\t{median_array(p_train_acc)}\t{p_test_acc}")
+    print(f"Median Acc:\t{median_array(p_train_acc)}\t{median_array(p_test_acc)}")
 
     pd.DataFrame(
         {"Train": p_train_acc, "Test": p_test_acc},
