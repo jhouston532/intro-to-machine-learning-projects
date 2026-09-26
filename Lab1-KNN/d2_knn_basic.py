@@ -10,7 +10,7 @@ from sklearn.neighbors import KNeighborsClassifier
 
 
 def training_size_check(
-    X, y, min_size, max_size, interval=0.05, neighbors=3, rand_state_range=10
+    X, y, min_size, max_size, interval=0.05, neighbors=5, rand_state_range=10
 ):
     # input data for a test set where the variable is the split
     # return the x axis and two data sets, test_sizes_arr train_acc and test_acc,
@@ -50,7 +50,7 @@ def training_size_check(
     return test_sizes, train_acc_arr, test_acc_arr
 
 
-def minkowskian_check(X, y, p_min, p_max, neighbors=3, test_size=0.2, rand_state=42):
+def minkowskian_check(X, y, p_min, p_max, neighbors=5, test_size=0.2, rand_state=42):
     # test for changes in p on the same data set.
     p_range = p_max - p_min
     p_val_array = []
@@ -61,7 +61,7 @@ def minkowskian_check(X, y, p_min, p_max, neighbors=3, test_size=0.2, rand_state
         X, y, test_size=test_size, random_state=rand_state
     )
 
-    for i in range(p_range):
+    for i in range(p_range+1):
         # set up the classifier
         p_val = p_min + i
         p_val_array.append(p_val)
@@ -78,14 +78,14 @@ def minkowskian_check(X, y, p_min, p_max, neighbors=3, test_size=0.2, rand_state
     return p_val_array, train_acc_arr, test_acc_arr
 
 
-def print_probs(n_rows, X, y, k=3, t=0.2, rand_state=42, p=1):
+def print_probs(n_rows, X, y, k=5, t=0.2, rand_state=42, p=2):
     X_train, X_test, y_train, y_test = train_test_split(
         X, y, test_size=t, random_state=rand_state
     )
     knn = KNeighborsClassifier(n_neighbors=k, p=p).fit(X_train, y_train)
-    probs = knn.predict(X_test)
+    probs = knn.predict_proba(X_test)
     df = pd.DataFrame(probs, columns=knn.classes_, index=X_test.index).round(2)
-    df["Predicted"] = knn.predict_proba(X_test)
+    df["Predicted"] = knn.predict(X_test)
     df["Actual"] = y_test
     df["Correct"] = df["Predicted"] == df["Actual"]
     print(df.head(n_rows))
@@ -171,6 +171,8 @@ def main():
     )
     plt.show()
 
+    print_probs(50, X, y)
+    print("Done!")
 
 if __name__ == "__main__":
     main()
