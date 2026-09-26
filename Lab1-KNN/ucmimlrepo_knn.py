@@ -85,7 +85,7 @@ def main():
 
     iter_num = 25
     train_scores, test_scores = [], []
-    
+
     # let's try some variable Ks
     for i in range(iter_num):
         K = i + 1
